@@ -1,0 +1,42 @@
+---
+- name: Install MariaDB on Ubuntu
+  hosts: webservers  # Specify your inventory group here
+  become: yes  # Use sudo to execute tasks
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install MariaDB
+      apt:
+        name: mariadb-server
+        state: present
+
+    - name: Enable MariaDB to start on boot
+      systemd:
+        name: mariadb
+        enabled: yes
+
+    - name: Start MariaDB service
+      systemd:
+        name: mariadb
+        state: started
+
+    - name: Install Python3 and pip
+      apt:
+        name:
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Install pymysql
+      pip:
+        name: pymysql
+        state: present
+
+    - name: Create a new database with name 'bobdata'
+      mysql_db:
+        name: bobdata
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock  # Use Unix socket for authentication

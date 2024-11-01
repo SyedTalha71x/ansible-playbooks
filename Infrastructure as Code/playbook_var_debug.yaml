@@ -1,0 +1,51 @@
+---
+- name: Install MariaDB on Ubuntu
+  hosts: dbservers  
+  become: yes
+  vars:
+    dbname: bobdata
+    socketfile: /var/run/mysqld/mysqld.sock
+
+  tasks:
+    - debug:
+        msg: "the name of database is {{dbname}}"
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install MariaDB
+      apt:
+        name: mariadb-server
+        state: present
+
+    - name: Enable MariaDB to start on boot
+      systemd:
+         name: mariadb
+         enabled: yes
+
+    - name: Start MariaDB service
+      systemd:
+        name: mariadb
+        state: started
+
+    - name: Install Python3 and pip
+      apt:
+        name:
+          - python3
+          - python3-pip
+        state: present
+
+    - name: Install pymysql
+      pip:
+        name: pymysql
+        state: present
+
+    - name: Create a new database with name "{{dbname}}"
+      mysql_db:
+        name: "{{dbname}}"
+        state: present
+        login_unix_socket: "{{socketfile}}"
+
+
+

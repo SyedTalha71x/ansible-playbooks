@@ -1,0 +1,14 @@
+---
+- name: Understanding Loops on Ansible
+  hosts: all
+  become: yes
+  tasks:
+    - name: "Installing multiple packages through loop"
+      apt:
+        name: "{{ item}}"
+        state: present
+      loop:
+        - nginx
+        - git
+        - curl
+

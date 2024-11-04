@@ -1,0 +1,11 @@
+---
+- name: Provisioning or Decision Making
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install NTP Agent on Ubuntu
+      apt:
+        name: ntp
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
